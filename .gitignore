@@ -1,0 +1,3 @@
+config/clients/
+config/server_*_key
+wg0.conf

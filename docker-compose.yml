@@ -1,0 +1,29 @@
+services:
+  wireguard:
+    restart: unless-stopped
+    image: wireguard:local
+    build:
+        context: .
+        no_cache: false
+        pull: true
+        dockerfile_inline: |
+            FROM alpine:latest
+            WORKDIR /etc/wireguard/
+            RUN apk add --no-cache bash wireguard-tools iptables
+            COPY ./init.sh /init.sh
+            ENTRYPOINT ["/init.sh"]
+            CMD ["wg-quick", "up", "wg0"]
+            EXPOSE 51820/udp
+    container_name: wireguard
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    sysctls:
+      - net.ipv4.ip_forward=1
+      - net.ipv4.conf.all.src_valid_mark=1
+    volumes:
+      - ./config/:/etc/wireguard/
+    ports:
+      - "51820:51820/udp"
