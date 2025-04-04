@@ -5,7 +5,6 @@ init_server(){
        [[ ! -f "/etc/wireguard/server_public_key" ]] 
     then
         wg genkey | tee server_private_key | wg pubkey > server_public_key
-        cp /etc/wireguard/wg0-server.example.conf /etc/wireguard/wg0.conf
     fi
 
     if [[ ! -f "/etc/wireguard/wg0.conf" ]] 
